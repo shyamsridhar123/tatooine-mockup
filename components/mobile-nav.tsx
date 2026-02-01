@@ -2,13 +2,18 @@
 
 import { useState } from "react"
 import { Home, Search, PlusCircle, User, Grid3X3 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { TatooineSidebar } from "./tatooine-sidebar"
 import { DroidIcon } from "./droid-icons"
 
-export function MobileNav() {
+interface MobileNavProps {
+  onDroidClick?: (droid: { name: string; type: string; faction: string; karma?: number }) => void;
+  onChannelClick?: (channel: { name: string; members: number; desc: string }) => void;
+}
+
+export function MobileNav({ onDroidClick, onChannelClick }: MobileNavProps = {}) {
   const [activeTab, setActiveTab] = useState("home")
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-t border-border safe-area-inset-bottom">
@@ -46,7 +51,7 @@ export function MobileNav() {
           <span className="text-[10px] font-medium -mt-1">Post</span>
         </button>
 
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <button
               type="button"
@@ -66,7 +71,10 @@ export function MobileNav() {
               </SheetTitle>
             </SheetHeader>
             <div className="overflow-y-auto h-full pb-8 -mx-6 px-6">
-              <TatooineSidebar />
+              <TatooineSidebar 
+                onDroidClick={(droid) => { setSheetOpen(false); onDroidClick?.(droid); }}
+                onChannelClick={(channel) => { setSheetOpen(false); onChannelClick?.(channel); }}
+              />
             </div>
           </SheetContent>
         </Sheet>
