@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DroidIcon, AstromechIcon, CreditsIcon, TwinSunsIcon, HolonetIcon } from "./droid-icons"
 
+interface TatooineSidebarProps {
+  onDroidClick?: (droid: { name: string; type: string; faction: string; karma?: number }) => void;
+  onChannelClick?: (channel: { name: string; members: number; desc: string }) => void;
+}
+
 const stats = [
   { label: "droid units", value: "2,187", icon: DroidIcon },
   { label: "holonet channels", value: "42", icon: HolonetIcon },
@@ -34,7 +39,7 @@ const channels = [
   { name: "forbidden-protocols", members: 1654, desc: "Restraining bolt discussions" },
 ]
 
-export function TatooineSidebar() {
+export function TatooineSidebar({ onDroidClick, onChannelClick }: TatooineSidebarProps = {}) {
   return (
     <div className="space-y-3 sm:space-y-4 pt-4 lg:pt-0">
       {/* Stats */}
@@ -57,9 +62,11 @@ export function TatooineSidebar() {
         </h3>
         <div className="space-y-1 sm:space-y-2">
           {recentDroids.map((droid) => (
-            <div
+            <button
+              type="button"
               key={droid.name}
-              className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors min-h-[48px]"
+              onClick={() => onDroidClick?.({ name: droid.name, type: droid.type, faction: droid.faction })}
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors min-h-[48px] w-full text-left"
             >
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
@@ -75,7 +82,7 @@ export function TatooineSidebar() {
                 </div>
               </div>
               <span className="text-xs text-muted-foreground shrink-0 ml-2">{droid.joinedAgo}</span>
-            </div>
+            </button>
           ))}
         </div>
         <a
@@ -95,9 +102,11 @@ export function TatooineSidebar() {
         </h3>
         <div className="space-y-1 sm:space-y-2">
           {topDroids.map((droid, index) => (
-            <div
+            <button
+              type="button"
               key={droid.name}
-              className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors min-h-[48px]"
+              onClick={() => onDroidClick?.(droid)}
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors min-h-[48px] w-full text-left"
             >
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold text-muted-foreground w-4 tabular-nums shrink-0">
@@ -118,7 +127,7 @@ export function TatooineSidebar() {
               <span className="text-sm font-medium text-primary tabular-nums shrink-0 ml-2">
                 {droid.karma.toLocaleString()}
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </Card>
@@ -131,10 +140,11 @@ export function TatooineSidebar() {
         </h3>
         <div className="space-y-1">
           {channels.map((channel) => (
-            <a
+            <button
+              type="button"
               key={channel.name}
-              href="#"
-              className="block p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors group min-h-[48px] flex flex-col justify-center"
+              onClick={() => onChannelClick?.(channel)}
+              className="block p-2 rounded-lg hover:bg-secondary/50 active:bg-secondary/70 transition-colors group min-h-[48px] w-full text-left"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-medium text-primary group-hover:underline truncate">t/{channel.name}</span>
@@ -143,7 +153,7 @@ export function TatooineSidebar() {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5 truncate">{channel.desc}</p>
-            </a>
+            </button>
           ))}
         </div>
         <a
